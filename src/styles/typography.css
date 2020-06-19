@@ -1,0 +1,9 @@
+body {
+  color: var(--text-color-primary);
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
+}
+
+.logo--text {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
