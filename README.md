@@ -24,4 +24,4 @@ test:head:watch`.
 
 ## Deployment
 
-PENDING
+View the live site at [https://coursepunch.netlify.app/](https://coursepunch.netlify.app/).
