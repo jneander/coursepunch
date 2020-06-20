@@ -1,11 +1,45 @@
 body {
-  background: var(--background-color);
+  background: var(--background-color-primary);
   height: 100vh;
   width: 100vw;
 }
 
-.app-container {
-  padding: var(--spacing-medium);
-  min-height: 100%;
+.app-container,
+.layout-container {
+  overflow: hidden;
+  height: 100%;
   width: 100%;
+}
+
+.layout-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.layout-header {
+  align-items: center;
+  column-gap: var(--spacing-medium);
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+
+  padding: var(--spacing-medium);
+
+  box-shadow: 0 0.125rem 0.25rem 0 rgba(0,0,0,.1);
+  z-index: 1;
+}
+
+.layout-header > * {
+  flex-grow: 1;
+}
+
+.layout-header .navigation {
+  display: flex;
+  justify-content: center;
+}
+
+.layout-main {
+  background: var(--background-color-secondary);
+  flex-basis: 100%;
+  overflow-y: scroll;
+  padding: var(--spacing-medium);
 }

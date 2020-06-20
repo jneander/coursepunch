@@ -1,0 +1,20 @@
+.navigation-link:visited,
+.navigation-link--current:visited {
+  color: var(--text-color-primary);
+}
+
+.navigation-link:not(.navigation-link--current) {
+  color: var(--action-color-primary);
+}
+
+.navigation-link,
+.navigation-link--current {
+  border-radius: 0.25rem;
+  margin: 0 var(--spacing-small);
+  padding: var(--spacing-small) var(--spacing-medium);
+}
+
+.navigation-link--current {
+  background: var(--action-color-primary--activated);
+  text-decoration: none;
+}

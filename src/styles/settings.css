@@ -1,7 +1,10 @@
 :root {
   /* Color */
-  --background-color: #FFFFFF;
+  --background-color-primary: #FFFFFF;
+  --background-color-secondary: #F7F7F7;
   --text-color-primary: #2C2C2D;
+  --action-color-primary: #639328;
+  --action-color-primary--activated: #D0E3B7;
 
   /* Spacing */
   --spacing-small: 0.5rem;

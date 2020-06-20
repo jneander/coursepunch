@@ -1,4 +1,9 @@
-import App from './App'
+import {createBrowserHistory} from 'history'
 
-const app = new App({})
+import App from './App'
+import {Routing} from './Routing'
+
+const routing = new Routing({history: createBrowserHistory()})
+
+const app = new App({routing})
 app.start()
