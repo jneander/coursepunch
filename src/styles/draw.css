@@ -1,0 +1,33 @@
+.drawing {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin: var(--spacing-medium);
+}
+
+.draw-controls {
+  margin-block-start: var(--spacing-medium);
+}
+
+.draw-control--radio {
+  display: inline-block;
+  margin: var(--spacing-small);
+}
+
+.draw-control--radio input {
+  display: none;
+}
+
+.draw-control--radio label {
+  border-radius: 0.25rem;
+  cursor: pointer;
+  padding: var(--spacing-small) var(--spacing-medium);
+}
+
+.draw-control--radio input:not(:checked) + label {
+  color: var(--action-color-secondary);
+}
+
+.draw-control--radio input:checked + label {
+  background-color: var(--action-color-secondary--activated);
+}

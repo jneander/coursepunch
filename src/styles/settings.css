@@ -3,8 +3,12 @@
   --background-color-primary: #FFFFFF;
   --background-color-secondary: #F7F7F7;
   --text-color-primary: #2C2C2D;
+
   --action-color-primary: #639328;
   --action-color-primary--activated: #D0E3B7;
+
+  --action-color-secondary: #283F93;
+  --action-color-secondary--activated: #B7C5E3;
 
   /* Spacing */
   --spacing-small: 0.5rem;

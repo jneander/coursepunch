@@ -4,6 +4,7 @@ import 'firebase/firebase'
 
 const API_KEY = 'AIzaSyCtN5ObdLrifLEvA-grsDPyzlwTw9snNpQ'
 const PROJECT_ID = 'coursepunch-jln'
+const MARKING_DEBOUNCE = 100
 
 const FIXED_IDS = Array(24).fill().map((_, index) => `${index + 1}`)
 
@@ -17,6 +18,16 @@ function normalizePresses(snapshot) {
   return FIXED_IDS.map(id => dataMap[id] || {id, pressed: false})
 }
 
+function normalizeMarkings(snapshot) {
+  const data = []
+  snapshot.forEach(doc => {
+    doc.data().markings.forEach(marking => {
+      data.push({...marking, id: doc.id})
+    })
+  })
+  return data
+}
+
 export default class Datastore {
   constructor() {
     firebase.initializeApp({
@@ -25,6 +36,7 @@ export default class Datastore {
     })
 
     this.store = new Store({
+      markings: [],
       presses: []
     })
   }
@@ -36,18 +48,30 @@ export default class Datastore {
 
     this.db = firebase.firestore()
 
-    this.unlistenSnapshots = this.db
+    this.unlistenPresses = this.db
       .collection('presses')
       .onSnapshot(snapshot => {
         this.store.setState({
           presses: normalizePresses(snapshot),
         })
       })
+
+    this.unlistenMarkings = this.db
+      .collection('markings')
+      .orderBy('timestamp')
+      .onSnapshot(snapshot => {
+        this.store.setState({
+          markings: normalizeMarkings(snapshot),
+        })
+      })
   }
 
   uninitialize() {
-    if (this.unlistenSnapshots) {
-      this.unlistenSnapshots()
+    if (this.unlistenPresses) {
+      this.unlistenPresses()
+    }
+    if (this.unlistenMarkings) {
+      this.unlistenMarkings()
     }
     this.db = null
   }
@@ -60,13 +84,48 @@ export default class Datastore {
     return this.store.getState().presses
   }
 
+  getMarkings() {
+    return this.store.getState().markings
+  }
+
   setPressed(id, pressed) {
     this.db
       .collection('presses')
       .doc(id)
-      .set({
-        pressed: pressed,
+      .set({pressed})
+      .then(() => {
+        // No handling required
       })
+      .catch(() => {
+        // In a real application, address this error.
+      })
+  }
+
+  addMarking(position, rgb, dimensions) {
+    if (this.__nextBatch) {
+      this.__nextBatch.markings.push({position, rgb, dimensions})
+    } else {
+      this.__createBatchWithMarkings(position, rgb, dimensions)
+    }
+  }
+
+  // PRIVATE
+
+  __createBatchWithMarkings(position, rgb, dimensions) {
+    this.__nextBatch = {
+      markings: [{position, rgb, dimensions}]
+    }
+
+    this.__nextBatch.timeout = window.setTimeout(this.__submitNextBatch.bind(this), MARKING_DEBOUNCE)
+  }
+
+  __submitNextBatch() {
+    const {markings} = this.__nextBatch
+    this.__nextBatch = null
+
+    this.db
+      .collection('markings')
+      .add({markings, timestamp: firebase.firestore.FieldValue.serverTimestamp()})
       .then(() => {
         // No handling required
       })
