@@ -36,6 +36,7 @@ export default class Datastore {
     })
 
     this.store = new Store({
+      connected: navigator.onLine,
       markings: [],
       presses: []
     })
@@ -47,32 +48,39 @@ export default class Datastore {
     }
 
     this.db = firebase.firestore()
+    this.unsubscribeFns = []
 
-    this.unlistenPresses = this.db
+    this.unsubscribeFns.push(this.db
       .collection('presses')
       .onSnapshot(snapshot => {
         this.store.setState({
           presses: normalizePresses(snapshot),
         })
-      })
+      }))
 
-    this.unlistenMarkings = this.db
+    this.unsubscribeFns.push(this.db
       .collection('markings')
       .orderBy('timestamp')
       .onSnapshot(snapshot => {
         this.store.setState({
           markings: normalizeMarkings(snapshot),
         })
-      })
+      }))
+
+    const updateConnected = () => {
+      this.store.setState({connected: navigator.onLine})
+    }
+
+    window.addEventListener('online',  updateConnected)
+    window.addEventListener('offline', updateConnected)
+
+    this.unsubscribeFns.push(() => window.removeEventListener('online',  updateConnected))
+    this.unsubscribeFns.push(() => window.removeEventListener('offline', updateConnected))
   }
 
   uninitialize() {
-    if (this.unlistenPresses) {
-      this.unlistenPresses()
-    }
-    if (this.unlistenMarkings) {
-      this.unlistenMarkings()
-    }
+    this.unsubscribeFns.forEach(unsubscribeFn => unsubscribeFn())
+    this.unsubscribeFns = []
     this.db = null
   }
 
@@ -86,6 +94,10 @@ export default class Datastore {
 
   getMarkings() {
     return this.store.getState().markings
+  }
+
+  getConnected() {
+    return this.store.getState().connected
   }
 
   setPressed(id, pressed) {

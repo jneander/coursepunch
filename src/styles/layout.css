@@ -43,3 +43,7 @@ body {
   overflow-y: scroll;
   padding: var(--spacing-medium);
 }
+
+.connection-state {
+  text-align: end;
+}

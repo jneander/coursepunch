@@ -1,9 +1,14 @@
 import React from 'react'
 
+import useDatastore from '../../Datastore/useDatastore'
+
 export default function Layout(props) {
-  const {routing} = props
+  const {datastore, routing} = props
+
+  useDatastore(datastore)
 
   const currentView = routing.getCurrentView()
+  const connected = datastore.getConnected()
 
   function handleDrawClick(event) {
     event.preventDefault()
@@ -33,6 +38,8 @@ export default function Layout(props) {
             Draw
           </a>
         </nav>
+
+        <span className="connection-state">{connected ? 'Connected' : 'No Connection'}</span>
       </header>
 
       <main className="layout-main">{props.children}</main>
