@@ -12,7 +12,7 @@ export default function UI(props) {
 
   return (
     <Layout {...props}>
-      {currentView === "press" ? <Press /> : <Draw />}
+      {currentView === "press" ? <Press {...props} /> : <Draw {...props} />}
     </Layout>
   )
 }

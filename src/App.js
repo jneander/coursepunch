@@ -9,8 +9,14 @@ export default class App {
   }
 
   start() {
+    this.dependencies.datastore.initialize()
+
     const $app = document.getElementById('app')
     const element = <UI {...this.dependencies} />
     render(element, $app)
+  }
+
+  stop() {
+    this.dependencies.datastore.uninitialize()
   }
 }
